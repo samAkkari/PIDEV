@@ -1,0 +1,131 @@
+<?php
+
+namespace App\Entity;
+
+use App\Repository\OffreRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity(repositoryClass=OffreRepository::class)
+ */
+class Offre
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $date_debut;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $date_fin;
+
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $pourcentage;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $titre;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Menu::class, mappedBy="id_offre")
+     */
+    private $id_menus;
+
+    public function __construct()
+    {
+        $this->id_menus = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getDateDebut(): ?\DateTimeInterface
+    {
+        return $this->date_debut;
+    }
+
+    public function setDateDebut(?\DateTimeInterface $date_debut): self
+    {
+        $this->date_debut = $date_debut;
+
+        return $this;
+    }
+
+    public function getDateFin(): ?\DateTimeInterface
+    {
+        return $this->date_fin;
+    }
+
+    public function setDateFin(?\DateTimeInterface $date_fin): self
+    {
+        $this->date_fin = $date_fin;
+
+        return $this;
+    }
+
+    public function getPourcentage(): ?float
+    {
+        return $this->pourcentage;
+    }
+
+    public function setPourcentage(?float $pourcentage): self
+    {
+        $this->pourcentage = $pourcentage;
+
+        return $this;
+    }
+
+    public function getTitre(): ?string
+    {
+        return $this->titre;
+    }
+
+    public function setTitre(?string $titre): self
+    {
+        $this->titre = $titre;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Menu[]
+     */
+    public function getIdMenus(): Collection
+    {
+        return $this->id_menus;
+    }
+
+    public function addIdMenu(Menu $idMenu): self
+    {
+        if (!$this->id_menus->contains($idMenu)) {
+            $this->id_menus[] = $idMenu;
+            $idMenu->addIdOffre($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIdMenu(Menu $idMenu): self
+    {
+        if ($this->id_menus->removeElement($idMenu)) {
+            $idMenu->removeIdOffre($this);
+        }
+
+        return $this;
+    }
+}
