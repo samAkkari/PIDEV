@@ -24,9 +24,9 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+            ]
           },
           "configurations": {
             "production": {
@@ -119,6 +119,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "MyFoodFrontEnd"
+    }
+  },
+  "defaultProject": "MyFoodFrontEnd",
+  "cli": {
+    "analytics": "42a633aa-33b9-4cb7-8939-0b4f066912b3"
+  }
 }
