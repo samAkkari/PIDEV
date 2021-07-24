@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=MenuRepository::class)
+ * @ORM\Entity(repositoryClass="App\Repository\MenuRepository", repositoryClass=MenuRepository::class)
  */
 class Menu
 {
@@ -40,28 +40,28 @@ class Menu
     private $prix;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Restaurant::class, inversedBy="id_menu")
+     * @ORM\OneToMany(targetEntity=Offre::class, mappedBy="menu")
      */
-    private $id_restaurant;
+    private $offer;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Offre::class, inversedBy="id_menus")
+     * @ORM\ManyToOne(targetEntity=Restaurant::class, inversedBy="menu")
      */
-    private $id_offre;
+    private $restaurant;
 
     /**
-     * @ORM\OneToMany(targetEntity=LigneCommande::class, mappedBy="id_menu")
+     * @ORM\OneToMany(targetEntity=LigneCommandeMenu::class, mappedBy="menu")
      */
-    private $ligneCommandes;
-
+    private $lignecommandemenus;
 
 
     public function __construct()
     {
-        $this->id_offre = new ArrayCollection();
-        $this->ligneCommandes = new ArrayCollection();
+        $this->offer = new ArrayCollection();
+        $this->lignecommandemenus = new ArrayCollection();
 
     }
+
 
     public function getId(): ?int
     {
@@ -116,72 +116,73 @@ class Menu
         return $this;
     }
 
-    public function getIdRestaurant(): ?restaurant
+    public function getOffer(): Collection
     {
-        return $this->id_restaurant;
+        return $this->offer;
     }
 
-    public function setIdRestaurant(?restaurant $id_restaurant): self
+    public function addOffre(offre $offre): self
     {
-        $this->id_restaurant = $id_restaurant;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|offre[]
-     */
-    public function getIdOffre(): Collection
-    {
-        return $this->id_offre;
-    }
-
-    public function addIdOffre(offre $idOffre): self
-    {
-        if (!$this->id_offre->contains($idOffre)) {
-            $this->id_offre[] = $idOffre;
+        if (!$this->offer->contains($offre)) {
+            $this->offer[] = $offre;
+            $offre->setMenu($this);
         }
 
         return $this;
     }
 
-    public function removeIdOffre(offre $idOffre): self
+    public function removeOffre(offre $offre): self
     {
-        $this->id_offre->removeElement($idOffre);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|LigneCommande[]
-     */
-    public function getLigneCommandes(): Collection
-    {
-        return $this->ligneCommandes;
-    }
-
-    public function addLigneCommande(LigneCommande $ligneCommande): self
-    {
-        if (!$this->ligneCommandes->contains($ligneCommande)) {
-            $this->ligneCommandes[] = $ligneCommande;
-            $ligneCommande->setIdMenu($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLigneCommande(LigneCommande $ligneCommande): self
-    {
-        if ($this->ligneCommandes->removeElement($ligneCommande)) {
+        if ($this->offer->removeElement($offre)) {
             // set the owning side to null (unless already changed)
-            if ($ligneCommande->getIdMenu() === $this) {
-                $ligneCommande->setIdMenu(null);
+            if ($offre->getMenu() === $this) {
+                $offre->setMenu(null);
             }
         }
 
         return $this;
     }
 
+    public function getRestaurant(): ?Restaurant
+    {
+        return $this->restaurant;
+    }
 
+    public function setRestaurant(?Restaurant $restaurant): self
+    {
+        $this->restaurant = $restaurant;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Lignecommandemenu[]
+     */
+    public function getLignecommandemenus(): Collection
+    {
+        return $this->lignecommandemenus;
+    }
+
+    public function addlignecommandemenus(Lignecommandemenu $lignecommandemenus): self
+    {
+        if (!$this->lignecommandemenus->contains($lignecommandemenus)) {
+            $this->lignecommandemenus[] = $lignecommandemenus;
+            $lignecommandemenus->setMenu($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLignecommandemenus(Lignecommandemenu $lignecommandemenus): self
+    {
+        if ($this->commande->removeElement($lignecommandemenus)) {
+            // set the owning side to null (unless already changed)
+            if ($lignecommandemenus->getMenu() === $this) {
+                $lignecommandemenus->setMenu(null);
+            }
+        }
+
+        return $this;
+    }
 
 }

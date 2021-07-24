@@ -34,20 +34,34 @@ class Commande
      */
     private $statut;
 
-    /**
-     * @ORM\OneToMany(targetEntity=LigneCommande::class, mappedBy="id_commande")
-     */
-    private $ligneCommandes;
 
     /**
      * @ORM\OneToOne(targetEntity=Livraison::class, cascade={"persist", "remove"})
      */
     private $id_livraison;
 
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Utilisateur::class, inversedBy="commandes")
+     */
+    private $utilisateur;
+
+    /**
+     * @ORM\OneToMany(targetEntity=LigneCommandeMenu::class, mappedBy="commande")
+     */
+    private $lignecommandemenus;
+
+    /**
+     * @ORM\OneToMany(targetEntity=LigneCommandeProduit::class, mappedBy="commande")
+     */
+    private $lignecommandeproduits;
+
     public function __construct()
     {
-        $this->ligneCommandes = new ArrayCollection();
+        $this->lignecommandemenus = new ArrayCollection();
+        $this->lignecommandeproduits = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {
@@ -90,36 +104,6 @@ class Commande
         return $this;
     }
 
-    /**
-     * @return Collection|LigneCommande[]
-     */
-    public function getLigneCommandes(): Collection
-    {
-        return $this->ligneCommandes;
-    }
-
-    public function addLigneCommande(LigneCommande $ligneCommande): self
-    {
-        if (!$this->ligneCommandes->contains($ligneCommande)) {
-            $this->ligneCommandes[] = $ligneCommande;
-            $ligneCommande->setIdCommande($this);
-        }
-
-        return $this;
-    }
-
-    public function removeLigneCommande(LigneCommande $ligneCommande): self
-    {
-        if ($this->ligneCommandes->removeElement($ligneCommande)) {
-            // set the owning side to null (unless already changed)
-            if ($ligneCommande->getIdCommande() === $this) {
-                $ligneCommande->setIdCommande(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getIdLivraison(): ?livraison
     {
         return $this->id_livraison;
@@ -128,6 +112,78 @@ class Commande
     public function setIdLivraison(?livraison $id_livraison): self
     {
         $this->id_livraison = $id_livraison;
+
+        return $this;
+    }
+
+    public function getUtilisateur(): ?utilisateur
+    {
+        return $this->utilisateur;
+    }
+
+    public function setUtilisateur(?utilisateur $utilisateur): self
+    {
+        $this->utilisateur = $utilisateur;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Lignecommandemenu[]
+     */
+    public function getLignecommandemenus(): Collection
+    {
+        return $this->lignecommandemenus;
+    }
+
+    public function addLignecommandemenu(Lignecommandemenu $lignecommandemenu): self
+    {
+        if (!$this->lignecommandemenus->contains($lignecommandemenu)) {
+            $this->lignecommandemenus[] = $lignecommandemenu;
+            $lignecommandemenu->setCommande($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLignecommandemenu(Lignecommandemenu $lignecommandemenu): self
+    {
+        if ($this->lignecommandemenus->removeElement($lignecommandemenu)) {
+            // set the owning side to null (unless already changed)
+            if ($lignecommandemenu->getCommande() === $this) {
+                $lignecommandemenu->setCommande(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Lignecommandeproduit[]
+     */
+    public function getLignecommandeproduits(): Collection
+    {
+        return $this->lignecommandeproduits;
+    }
+
+    public function addLignecommandeproduit(Lignecommandeproduit $lignecommandeproduit): self
+    {
+        if (!$this->lignecommandeproduits->contains($lignecommandeproduit)) {
+            $this->lignecommandeproduits[] = $lignecommandeproduit;
+            $lignecommandeproduit->setCommande($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLignecommandeproduit(Lignecommandeproduit $lignecommandeproduit): self
+    {
+        if ($this->lignecommandeproduits->removeElement($lignecommandeproduit)) {
+            // set the owning side to null (unless already changed)
+            if ($lignecommandeproduit->getCommande() === $this) {
+                $lignecommandeproduit->setCommande(null);
+            }
+        }
 
         return $this;
     }

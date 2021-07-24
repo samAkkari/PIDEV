@@ -6,9 +6,6 @@ use App\Repository\RecetteRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\MaxDepth;
-use Symfony\Component\Serializer\Annotation\Groups;
-
 
 /**
  * @ORM\Entity(repositoryClass=RecetteRepository::class)
@@ -23,30 +20,50 @@ class Recette
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $libelle;
+    private $nom;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $date_publication;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $details;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Ingredient::class, inversedBy="recettes")
+     */
+    private $id_ingredient;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Commentaire::class, mappedBy="recette")
+     */
+    private $id_commentaire;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Avis::class, mappedBy="recette")
+     */
+    private $id_avis;
 
     /**
      * @ORM\Column(type="string", length=255)
      */
-    private $description;
+    private $image;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="integer")
      */
-    private $datePublication;
-
-    /**
-     * @Groups("DetailsRecette")
-     * @MaxDepth(2)
-     * @ORM\OneToMany(targetEntity=DetailsRecette::class, mappedBy="recette")
-     */
-    private $detailsRecettes;
+    private $nbrLike;
 
     public function __construct()
     {
-        $this->detailsRecettes = new ArrayCollection();
+        $this->id_ingredient = new ArrayCollection();
+        $this->id_commentaire = new ArrayCollection();
+        $this->id_avis = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -54,68 +71,146 @@ class Recette
         return $this->id;
     }
 
-    public function getLibelle(): ?string
+    public function getNom(): ?string
     {
-        return $this->libelle;
+        return $this->nom;
     }
 
-    public function setLibelle(string $libelle): self
+    public function setNom(?string $nom): self
     {
-        $this->libelle = $libelle;
+        $this->nom = $nom;
 
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getDatePublication(): ?\DateTimeInterface
     {
-        return $this->description;
+        return $this->date_publication;
     }
 
-    public function setDescription(string $description): self
+    public function setDatePublication(?\DateTimeInterface $date_publication): self
     {
-        $this->description = $description;
+        $this->date_publication = $date_publication;
 
         return $this;
     }
 
-    public function getDatePublication(): ?string
+    public function getDetails(): ?string
     {
-        return $this->datePublication;
+        return $this->details;
     }
 
-    public function setDatePublication(string $datePublication): self
+    public function setDetails(?string $details): self
     {
-        $this->datePublication = $datePublication;
+        $this->details = $details;
 
         return $this;
     }
 
     /**
-     * @return Collection|DetailsRecette[]
+     * @return Collection|ingredient[]
      */
-    public function getDetailsRecettes(): Collection
+    public function getIdIngredient(): Collection
     {
-        return $this->detailsRecettes;
+        return $this->id_ingredient;
     }
 
-    public function addDetailsRecette(DetailsRecette $detailsRecette): self
+    public function addIdIngredient(ingredient $idIngredient): self
     {
-        if (!$this->detailsRecettes->contains($detailsRecette)) {
-            $this->detailsRecettes[] = $detailsRecette;
-            $detailsRecette->setRecette($this);
+        if (!$this->id_ingredient->contains($idIngredient)) {
+            $this->id_ingredient[] = $idIngredient;
         }
 
         return $this;
     }
 
-    public function removeDetailsRecette(DetailsRecette $detailsRecette): self
+    public function removeIdIngredient(ingredient $idIngredient): self
     {
-        if ($this->detailsRecettes->removeElement($detailsRecette)) {
+        $this->id_ingredient->removeElement($idIngredient);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|commentaire[]
+     */
+    public function getIdCommentaire(): Collection
+    {
+        return $this->id_commentaire;
+    }
+
+    public function addIdCommentaire(commentaire $idCommentaire): self
+    {
+        if (!$this->id_commentaire->contains($idCommentaire)) {
+            $this->id_commentaire[] = $idCommentaire;
+            $idCommentaire->setRecette($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIdCommentaire(commentaire $idCommentaire): self
+    {
+        if ($this->id_commentaire->removeElement($idCommentaire)) {
             // set the owning side to null (unless already changed)
-            if ($detailsRecette->getRecette() === $this) {
-                $detailsRecette->setRecette(null);
+            if ($idCommentaire->getRecette() === $this) {
+                $idCommentaire->setRecette(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|avis[]
+     */
+    public function getIdAvis(): Collection
+    {
+        return $this->id_avis;
+    }
+
+    public function addIdAvi(avis $idAvi): self
+    {
+        if (!$this->id_avis->contains($idAvi)) {
+            $this->id_avis[] = $idAvi;
+            $idAvi->setRecette($this);
+        }
+
+        return $this;
+    }
+
+    public function removeIdAvi(avis $idAvi): self
+    {
+        if ($this->id_avis->removeElement($idAvi)) {
+            // set the owning side to null (unless already changed)
+            if ($idAvi->getRecette() === $this) {
+                $idAvi->setRecette(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function getNbrLike(): ?int
+    {
+        return $this->nbrLike;
+    }
+
+    public function setNbrLike(int $nbrLike): self
+    {
+        $this->nbrLike = $nbrLike;
 
         return $this;
     }

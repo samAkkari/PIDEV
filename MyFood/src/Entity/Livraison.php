@@ -34,6 +34,11 @@ class Livraison
      */
     private $facture;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Commande::class, cascade={"persist", "remove"})
+     */
+    private $commande;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -63,17 +68,7 @@ class Livraison
         return $this;
     }
 
-    public function getIdFacture(): ?facture
-    {
-        return $this->id_facture;
-    }
 
-    public function setIdFacture(?facture $id_facture): self
-    {
-        $this->id_facture = $id_facture;
-
-        return $this;
-    }
 
     public function getFacture(): ?facture
     {
@@ -83,6 +78,18 @@ class Livraison
     public function setFacture(?facture $facture): self
     {
         $this->facture = $facture;
+
+        return $this;
+    }
+
+    public function getCommande(): ?Commande
+    {
+        return $this->commande;
+    }
+
+    public function setCommande(?Commande $commande): self
+    {
+        $this->commande = $commande;
 
         return $this;
     }

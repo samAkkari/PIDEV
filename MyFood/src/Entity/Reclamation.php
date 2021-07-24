@@ -79,18 +79,6 @@ class Reclamation
         return $this;
     }
 
-    public function getManyToOne(): ?string
-    {
-        return $this->ManyToOne;
-    }
-
-    public function setManyToOne(string $ManyToOne): self
-    {
-        $this->ManyToOne = $ManyToOne;
-
-        return $this;
-    }
-
     public function getIdUtilisateur(): ?utilisateur
     {
         return $this->id_utilisateur;

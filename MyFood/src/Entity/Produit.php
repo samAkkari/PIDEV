@@ -35,21 +35,25 @@ class Produit
     private $quantite;
 
     /**
-     * @ORM\OneToMany(targetEntity=LigneCommande::class, mappedBy="id_produit")
+     * @ORM\Column(type="string", length=255)
      */
-    private $ligneCommandes;
+    private $image;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Categorie::class, inversedBy="produits")
+     * @ORM\OneToMany(targetEntity=LigneCommandeProduit::class, mappedBy="produit")
+     */
+    private $lignecommandeproduits;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Categorie::class, inversedBy="produit")
      */
     private $categorie;
 
-
-
     public function __construct()
     {
-        $this->ligneCommandes = new ArrayCollection();
+        $this->lignecommandeproduits = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {
@@ -92,30 +96,42 @@ class Produit
         return $this;
     }
 
-    /**
-     * @return Collection|LigneCommande[]
-     */
-    public function getLigneCommandes(): Collection
+    public function getImage(): ?string
     {
-        return $this->ligneCommandes;
+        return $this->image;
     }
 
-    public function addLigneCommande(LigneCommande $ligneCommande): self
+    public function setImage(string $image): self
     {
-        if (!$this->ligneCommandes->contains($ligneCommande)) {
-            $this->ligneCommandes[] = $ligneCommande;
-            $ligneCommande->setIdProduit($this);
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Lignecommandeproduit[]
+     */
+    public function getLignecommandeproduits(): Collection
+    {
+        return $this->lignecommandeproduits;
+    }
+
+    public function addLignecommandeproduit(Lignecommandeproduit $lignecommandeproduit): self
+    {
+        if (!$this->lignecommandeproduits->contains($lignecommandeproduit)) {
+            $this->lignecommandeproduits[] = $lignecommandeproduit;
+            $lignecommandeproduit->setProduit($this);
         }
 
         return $this;
     }
 
-    public function removeLigneCommande(LigneCommande $ligneCommande): self
+    public function removeLignecommandeproduit(Lignecommandeproduit $lignecommandeproduit): self
     {
-        if ($this->ligneCommandes->removeElement($ligneCommande)) {
+        if ($this->lignecommandeproduits->removeElement($lignecommandeproduit)) {
             // set the owning side to null (unless already changed)
-            if ($ligneCommande->getIdProduit() === $this) {
-                $ligneCommande->setIdProduit(null);
+            if ($lignecommandeproduit->getProduit() === $this) {
+                $lignecommandeproduit->setProduit(null);
             }
         }
 
@@ -133,6 +149,5 @@ class Produit
 
         return $this;
     }
-
 
 }

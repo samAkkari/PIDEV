@@ -6,6 +6,7 @@ use App\Repository\RestaurantRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=RestaurantRepository::class)
@@ -40,14 +41,16 @@ class Restaurant
     private $id_manager;
 
     /**
-     * @ORM\OneToMany(targetEntity=Menu::class, mappedBy="id_restaurant")
+     * @ORM\OneToMany(targetEntity=Menu::class, mappedBy="restaurant")
+     * @Groups({"detail"})
      */
-    private $id_menu;
+    private $menu;
 
     public function __construct()
     {
-        $this->id_menu = new ArrayCollection();
+        $this->menu = new ArrayCollection();
     }
+
 
     public function getId(): ?int
     {
@@ -103,34 +106,35 @@ class Restaurant
     }
 
     /**
-     * @return Collection|Menu[]
+     * @return Collection|menu[]
      */
-    public function getIdMenu(): Collection
+    public function getMenu(): Collection
     {
-        return $this->id_menu;
+        return $this->menu;
     }
 
-    public function addIdMenu(Menu $idMenu): self
+    public function addMenu(menu $menu): self
     {
-        if (!$this->id_menu->contains($idMenu)) {
-            $this->id_menu[] = $idMenu;
-            $idMenu->setIdRestaurant($this);
+        if (!$this->menu->contains($menu)) {
+            $this->menu[] = $menu;
+            $menu->setRestaurant($this);
         }
 
         return $this;
     }
 
-    public function removeIdMenu(Menu $idMenu): self
+    public function removeMenu(menu $menu): self
     {
-        if ($this->id_menu->removeElement($idMenu)) {
+        if ($this->menu->removeElement($menu)) {
             // set the owning side to null (unless already changed)
-            if ($idMenu->getIdRestaurant() === $this) {
-                $idMenu->setIdRestaurant(null);
+            if ($menu->getRestaurant() === $this) {
+                $menu->setRestaurant(null);
             }
         }
 
         return $this;
     }
+
 
 
 }

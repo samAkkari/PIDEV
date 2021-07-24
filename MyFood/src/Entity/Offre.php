@@ -40,14 +40,9 @@ class Offre
     private $titre;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Menu::class, mappedBy="id_offre")
+     * @ORM\ManyToOne(targetEntity=Menu::class, inversedBy="offre")
      */
-    private $id_menus;
-
-    public function __construct()
-    {
-        $this->id_menus = new ArrayCollection();
-    }
+    private $menu;
 
     public function getId(): ?int
     {
@@ -102,30 +97,19 @@ class Offre
         return $this;
     }
 
-    /**
-     * @return Collection|Menu[]
-     */
-    public function getIdMenus(): Collection
+    public function getMenu(): ?Menu
     {
-        return $this->id_menus;
+        return $this->menu;
     }
 
-    public function addIdMenu(Menu $idMenu): self
+    public function setMenu(?Menu $menu): self
     {
-        if (!$this->id_menus->contains($idMenu)) {
-            $this->id_menus[] = $idMenu;
-            $idMenu->addIdOffre($this);
-        }
+        $this->menu = $menu;
 
         return $this;
     }
 
-    public function removeIdMenu(Menu $idMenu): self
-    {
-        if ($this->id_menus->removeElement($idMenu)) {
-            $idMenu->removeIdOffre($this);
-        }
 
-        return $this;
-    }
+
+
 }
