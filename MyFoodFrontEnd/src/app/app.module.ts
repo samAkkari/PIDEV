@@ -13,7 +13,8 @@ import { AdminComponent } from './admin/admin.component';
 import { ReclamationComponent } from './reclamation/reclamation.component';
 import { CommandeComponent } from './commande/commande.component';
 import { FactureComponent } from './facture/facture.component';
-import { NavComponent } from './nav/nav.component';
+import { PanelAdminComponent } from './panel-admin/panel-admin.component';
+import { ProduitComponent } from './produit/produit.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { NavComponent } from './nav/nav.component';
     ReclamationComponent,
     CommandeComponent,
     FactureComponent,
-    NavComponent
+    PanelAdminComponent,
+    ProduitComponent
   ],
   imports: [
     BrowserModule,
